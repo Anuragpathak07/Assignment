@@ -20,9 +20,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<ArticlesList />} />
           <Route
-  path="/article/:id"
-  element={<ArticleDetail key={window.location.pathname} />}
-/>
+            path="/article/:id"
+            element={<ArticleDetail />}
+          />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

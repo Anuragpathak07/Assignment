@@ -19,9 +19,14 @@ const ArticleDetail = () => {
     const loadArticle = async () => {
       if (!id) return;
       
+      // Reset all state when id changes
+      setArticle(null);
+      setError(null);
+      setRewriteError(null);
+      setRewriting(false);
+      
       try {
         setLoading(true);
-        setError(null);
         const data = await fetchArticleById(id);
         setArticle(data);
       } catch (err) {
@@ -42,8 +47,11 @@ const ArticleDetail = () => {
       setRewriting(true);
       setRewriteError(null);
       const newArticle = await rewriteArticle(id);
+      // Reset rewriting state before navigation
+      setRewriting(false);
       // Navigate to the newly created article
-      navigate(`/article/${newArticle.id}`);
+      // Use replace: true to replace current history entry, or just navigate normally
+      navigate(`/article/${newArticle.id}`, { replace: false });
     } catch (err: any) {
       console.error("Failed to rewrite article:", err);
       // Extract error message from API response if available

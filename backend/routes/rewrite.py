@@ -97,11 +97,17 @@ def rewrite(article_id):
             }), 500
 
         # Create updated article
+        # Ensure references is a comma-separated string
+        if isinstance(links, list):
+            references_str = ",".join(links)
+        else:
+            references_str = str(links) if links else ""
+        
         updated = Article(
             title=article.title + " (Updated)",
             content=rewritten_content,
             type="updated",
-            references=",".join(links) if isinstance(links, list) else links
+            references=references_str
         )
 
         db.session.add(updated)

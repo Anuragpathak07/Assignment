@@ -22,6 +22,25 @@ def create_article():
     db.session.commit()
     return jsonify(article.to_dict()), 201
 
+@articles_bp.route("/<int:article_id>", methods=["PUT", "PATCH"])
+def update_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    data = request.json
+    
+    if "title" in data:
+        article.title = data["title"]
+    if "content" in data:
+        article.content = data["content"]
+    if "source_url" in data:
+        article.source_url = data["source_url"]
+    if "type" in data:
+        article.type = data["type"]
+    if "references" in data:
+        article.references = data["references"] if isinstance(data["references"], str) else ",".join(data["references"])
+    
+    db.session.commit()
+    return jsonify(article.to_dict())
+
 @articles_bp.route("/<int:article_id>", methods=["DELETE"])
 def delete_article(article_id):
     article = Article.query.get_or_404(article_id)
