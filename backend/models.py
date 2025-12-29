@@ -15,7 +15,8 @@ class Article(db.Model):
             "id": self.id,
             "title": self.title,
             "content": self.content,
-            "source_url": self.source_url,
             "type": self.type,
+            "source_url": self.source_url,
             "references": self.references.split(",") if self.references else []
-        }
+    }
+

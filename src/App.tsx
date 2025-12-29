@@ -19,7 +19,11 @@ const App = () => (
         <Navbar />
         <Routes>
           <Route path="/" element={<ArticlesList />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
+          <Route
+  path="/article/:id"
+  element={<ArticleDetail key={window.location.pathname} />}
+/>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
