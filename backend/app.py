@@ -10,26 +10,31 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Enable CORS for all routes
-# Allow localhost for development and Vercel for production
-allowed_origins = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "https://assignment-liart-two-59.vercel.app",
-]
+# Allow all origins for production (Render) to work with Vercel deployments
+# This is safe for a public API
 
-# Also check for environment variable for additional origins
-if os.getenv("ALLOWED_ORIGINS"):
-    additional_origins = os.getenv("ALLOWED_ORIGINS").split(",")
-    allowed_origins.extend([origin.strip() for origin in additional_origins])
+# Check multiple ways to detect production environment
+is_production = (
+    os.getenv("RENDER") is not None or  # Render sets this
+    os.getenv("FLASK_ENV") == "production" or
+    os.getenv("ENVIRONMENT") == "production" or
+    not os.getenv("FLASK_DEBUG", "").lower() == "true"
+)
 
-# In production (Render), allow all origins for flexibility with Vercel preview deployments
-# In development, use specific origins
-if os.getenv("RENDER"):
-    # Production: Allow all origins (needed for Vercel preview deployments)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-else:
-    # Development: Use specific origins
-    CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
+# For now, always allow all origins to ensure it works
+# You can restrict this later if needed by uncommenting the production check
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# Alternative: Uncomment below to restrict in development
+# if is_production:
+#     CORS(app, resources={r"/api/*": {"origins": "*"}})
+# else:
+#     allowed_origins = [
+#         "http://localhost:8080",
+#         "http://127.0.0.1:8080",
+#         "https://assignment-liart-two-59.vercel.app",
+#     ]
+#     CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 db.init_app(app)
 
