@@ -32,9 +32,22 @@ def delete_article(article_id):
 @articles_bp.route("/scrape", methods=["POST"])
 def scrape_articles():
     scraped = scrape_oldest_articles()
+    added = 0
+    skipped = 0
+    
     for art in scraped:
         exists = Article.query.filter_by(source_url=art["source_url"]).first()
         if not exists:
             db.session.add(Article(**art))
+            added += 1
+        else:
+            skipped += 1
+    
     db.session.commit()
-    return jsonify({"message": "Scraping completed"})
+    
+    return jsonify({
+        "message": "Scraping completed",
+        "scraped": len(scraped),
+        "added": added,
+        "skipped": skipped
+    })
