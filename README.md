@@ -132,24 +132,44 @@ This project implements a complete article management system with three main pha
    ```
 
 4. **Create `.env` file** in the `backend` directory:
+   ```bash
+   # Copy the example file
+   cp .env.example .env
+   # Or create it manually
+   ```
+   
+   Then edit `.env` and add your API keys:
    ```env
    SERPER_API_KEY=your_serper_api_key_here
    COHERE_API_KEY=your_cohere_api_key_here
    ```
    
    > **Note**: 
-   - `SERPER_API_KEY` is optional if you have at least 2 articles in the database
+   - `SERPER_API_KEY` is required for Google Search (primary method for finding reference articles)
    - `COHERE_API_KEY` is required for article rewriting
    - Get your API keys from:
      - Serper: https://serper.dev/
      - Cohere: https://cohere.com/
+   
+   > **Database**: The database (`database.db`) will be created automatically on first run. It starts empty - you'll need to scrape articles first.
+   
+   > **Important**: The database file is **NOT** included in the repository. Each user gets a fresh, empty database.
 
-5. **Run the backend server**:
+5. **Initialize database** (optional - database is created automatically on first run):
+   ```bash
+   # The database is created automatically when you start the server
+   # But if you want to reset it to a fresh state, you can run:
+   python init_db.py
+   ```
+
+6. **Run the backend server**:
    ```bash
    python app.py
    ```
    
    The backend will start on `http://127.0.0.1:5000`
+   - On first run, the database will be created automatically (empty)
+   - You'll need to scrape articles to populate it
 
 ### Frontend Setup
 
