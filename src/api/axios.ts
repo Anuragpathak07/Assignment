@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: "http://127.0.0.1:5000/api",
+  baseURL: "https://assignment-krcn.onrender.com/api",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -28,7 +28,7 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.code === "ECONNREFUSED" || error.message.includes("Network Error")) {
-      console.error("[API] Connection refused. Is the backend server running on http://127.0.0.1:5000?");
+      console.error("[API] Connection refused. Is the backend server running on https://assignment-krcn.onrender.com/?");
       error.message = "Cannot connect to backend server. Please ensure the backend is running.";
     } else if (error.response) {
       // Server responded with error status
