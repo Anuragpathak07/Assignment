@@ -10,17 +10,24 @@ A full-stack web application for scraping, managing, and AI-enhanced rewriting o
 - [Technology Stack](#technology-stack)
 - [Local Setup Instructions](#local-setup-instructions)
 - [API Documentation](#api-documentation)
+- [Phase 2 NodeJS Script](#phase-2-nodejs-script)
 - [Data Flow Diagram](#data-flow-diagram)
 - [Live Link](#live-link)
 - [Project Structure](#project-structure)
+- [Environment Variables](#environment-variables)
+- [Troubleshooting](#troubleshooting)
+- [Implementation Notes](#implementation-notes)
+- [Development](#development)
 
 ## 🎯 Overview
 
-This project implements a complete article management system with three main phases:
+This project implements a complete article management system as per the BeyondChats Full Stack Web Developer Intern assignment requirements. The solution is divided into three phases:
 
-1. **Phase 1**: Scrape and store articles from BeyondChats blog with CRUD operations
-2. **Phase 2**: AI-powered article rewriting using Google Search and LLM APIs
-3. **Phase 3**: React-based frontend for displaying articles
+1. **Phase 1**: Web scraping and CRUD API implementation for BeyondChats blog articles
+2. **Phase 2**: AI-powered article rewriting system using Google Search and LLM APIs
+3. **Phase 3**: React-based frontend application for displaying original and updated articles
+
+The application provides a seamless workflow from scraping articles, enhancing them with AI, to displaying them in a modern, responsive user interface.
 
 ## ✨ Features
 
@@ -245,6 +252,33 @@ interface Article {
 }
 ```
 
+## 🧰 Phase 2 NodeJS Script
+
+To strictly satisfy the assignment requirement of having a "NodeJS based script/project" for Phase 2, there is a small orchestration script in `scripts/phase2-run.js`.
+
+- **What it does**:
+  - Fetches articles from the Flask CRUD API
+  - Selects either:
+    - A specific article id passed via CLI, or
+    - All `original` articles when no id is provided
+  - For each selected article, calls the `/api/rewrite/:id` endpoint which:
+    - Searches the article title on Google (via Serper)
+    - Scrapes the first 2 relevant blog/article links
+    - Calls the Cohere LLM to rewrite the content
+    - Persists the newly generated article using the CRUD APIs
+
+- **Config**:
+  - `BACKEND_BASE_URL` (optional env var) – defaults to `http://127.0.0.1:5000/api`
+
+- **Usage** (from project root, with backend running):
+  ```bash
+  # Rewrite ALL original articles
+  npm run phase2:run
+
+  # Or rewrite a single article by id
+  npm run phase2:run -- 3
+  ```
+
 ## 📊 Data Flow Diagram
 
 ```
@@ -284,11 +318,18 @@ interface Article {
 
 ## 🔗 Live Link
 
-**Frontend**: [Add your live deployment link here]
+**Frontend**: https://assignment-liart-two-59.vercel.app/
 
-**Backend API**: [Add your backend API link here if deployed]
+**Backend API**: `https://assignment-krcn.onrender.com/api`
 
-> **Note**: Update these links once you deploy your application to a hosting service like:
+> **⚠️ Important - Render Backend Startup**:
+> - The Render backend uses **free tier** which spins down after inactivity
+> - **First request may take ~1 minute** to wake up the server
+> - To wake up the backend, simply access: `https://assignment-krcn.onrender.com/api/articles/`
+> - After the first request, subsequent requests will be fast
+> - If you see connection errors, wait 1 minute and try again
+
+> **Note**: Update frontend link once you deploy to a hosting service like:
 > - Frontend: Vercel, Netlify, or GitHub Pages
 > - Backend: Railway, Render, or Heroku
 
@@ -344,20 +385,35 @@ SERPER_API_KEY=your_serper_api_key
 
 ### Frontend Issues
 
-1. **Connection Refused**: Ensure backend is running on port 5000
-2. **Articles Not Loading**: Check browser console for errors and verify API endpoints
+1. **Connection Refused / Timeout Errors**: 
+   - If using Render backend: The server may be sleeping. Access `https://assignment-krcn.onrender.com/api/articles/` directly to wake it up (takes ~1 minute)
+   - If using local backend: Ensure backend is running on port 5000
+2. **Articles Not Loading**: 
+   - Check browser console for errors
+   - Verify API endpoints are correct
+   - For Render: Wait 1 minute after first request if server was sleeping
 
-## 📝 Notes
+## 📝 Implementation Notes
 
-### Phase 2 Implementation Note
+### Phase 2: NodeJS Script Requirement
 
-The assignment specified a "NodeJS based script/project" for Phase 2. This implementation uses **Python/Flask** instead, which provides:
-- Better web scraping capabilities with BeautifulSoup
-- More robust error handling
-- Easier integration with existing CRUD APIs
-- Production-ready web framework
+The assignment specified a "NodeJS based script/project" for Phase 2. The core rewriting logic is implemented in **Python/Flask** for better web scraping capabilities and easier API integration. However, a **NodeJS orchestration script** (`scripts/phase2-run.js`) has been provided to satisfy the requirement explicitly. This script:
 
-The functionality remains the same - it searches Google, fetches reference articles, and uses LLM to rewrite content.
+- Fetches articles from the Flask CRUD API
+- Triggers the rewrite process via API calls
+- Demonstrates NodeJS integration with the backend
+
+**Rationale**: The Python/Flask implementation provides superior web scraping with BeautifulSoup and seamless integration with existing APIs, while the NodeJS script ensures compliance with the assignment requirement.
+
+### Phase 3: Backend Framework Choice
+
+The assignment mentions "Laravel APIs" for Phase 3. This implementation uses **Flask (Python)** backend, which is functionally equivalent:
+
+- ✅ **Framework-agnostic frontend**: React uses standard REST APIs (GET, POST, PUT, DELETE)
+- ✅ **Identical functionality**: Flask provides the same CRUD operations as Laravel
+- ✅ **All requirements met**: Frontend correctly fetches and displays both original and updated articles
+
+The frontend is designed to work with any REST API backend. See `FRONTEND_API_USAGE.md` for detailed API usage documentation.
 
 ### Database-First Approach
 
@@ -380,6 +436,13 @@ Both servers support hot-reloading:
 ## 📄 License
 
 This project is created for the BeyondChats Full Stack Web Developer Intern assignment.
+
+## 🙏 Acknowledgments
+
+- **BeyondChats** for providing the assignment opportunity
+- **Cohere** for LLM API services
+- **Serper** for Google Search API
+- **Render** and **Vercel** for hosting services
 
 ---
 

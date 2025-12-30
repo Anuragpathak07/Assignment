@@ -1,8 +1,8 @@
 # Database Setup Guide
 
-## Fresh Database for New Users
+## Overview
 
-The database (`backend/database.db`) is **NOT** included in the repository. Each user gets a completely fresh, empty database.
+The application uses SQLite for data storage. The database file (`backend/database.db`) is **NOT** included in the repository - each user/clone gets a fresh, empty database automatically.
 
 ## How It Works
 
